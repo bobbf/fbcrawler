@@ -87,6 +87,6 @@ while True:
     sendData= json.dumps(filteredJson,indent=2, sort_keys=True)
     byteData = bytes(sendData, 'utf-8')
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.sendto(byteData,("192.168.0.6",1234))
+    sock.sendto(byteData,("127.0.0.1",1234))
     break
 
