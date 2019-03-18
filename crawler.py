@@ -56,7 +56,9 @@ def get_comments(post_id):
         resultComment["like_count"]=0
         #print(get_comments(comment["id"]))
         #result += get_comments(comment["id"])
-        #del resultComment["from"]
+        if "from" in resultComment:
+            resultComment["writer"] = comment["from"]["name"]
+            del resultComment["from"]
         del resultComment["id"]
         result.append(resultComment)
     print(commentJson["paging"])
@@ -96,8 +98,9 @@ while True:
         print("===============================================")
         filteredJson={}
         filteredJson["data"] = filtered_comments
-        sendData= json.dumps(filteredJson,indent=2, sort_keys=True)
-        byteData = bytes(sendData, 'utf-8')
+        sendData= json.dumps(filteredJson)
+        print(sendData)
+        byteData = sendData.encode()
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.sendto(byteData,("127.0.0.1",1234))
     except:
