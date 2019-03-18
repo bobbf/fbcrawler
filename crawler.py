@@ -7,7 +7,7 @@ access_token="EAAE6dVYNwNIBAA5jsqhQtHsh9fy2AU2StYHJ2kpgzPPkjijbcN6ZAgeh6enyYUNhA
 access_token="EAAE6dVYNwNIBAA4gl3LUkPsAjOLMB75YxHuYDbbZBOjkkoYauEnFtBOktw9IDqNOCN5x6dSoU8TOehNW9ZA0FZC5ckwnnpZAnuZAmCbT0fmba52YfoPN1qPjXISDr9ASIwI5rj1ZBW2plbmIIznjYDtKdK4m0knJPLn7JfoGTD9ZC5VWDEUGWVQIodETZAAR0RhNAZAyM6CdZBrj2cD9muJOEw"
 
 access_token="EAAE6dVYNwNIBABzHnc6DosQDrK4BbRFgZBqugI3Mt1PpqybjhbNHfZBBZCS8YKDd6gcZAQdV5oFTmEabL51wKx0BdSzeV2NQZA6oZCKAuXs7tZAQoCFMK5JGj93lMiAehSDk4NexMZCxNdXxKcGE4Df2ObhFZBtGdWJV2akYMZChNA7nU5AbA5V72pWjq7l8mhjHXUCUJj43UNTYPduurniNZAL"
-
+access_token="EAAE6dVYNwNIBAF1GLZA0ys8rnlZBnHXpA2H3ivIOn9wzTJKO6JJWHWeuyWMrhrCLIW8ZBwlnslxYhBt2HMn0janwsqboZCSmOfTYEe4Wu4cJFDGoFGcOCx0sxx8jYucxdXStra00lGgCioicWSfmMv8ukJFZCejpSHD3PdL3xnjNaNWXbwxVDP12DCpdnwk8pfQe6TlgnXAZC7nVN3IGfd"
 tokenParam = "access_token="+access_token
 
 
@@ -35,21 +35,21 @@ def get_posts():
 
 
 def get_comments(post_id):
-    url = "https://graph.facebook.com/v3.2/"+post_id+"/comments?"+tokenParam
+    url = "https://graph.facebook.com/v3.2/"+post_id+"/comments?limit=10000000&"+tokenParam
     commentJson = getJsonFromUrl(url)
     result = []
     for comment in commentJson["data"]:
         #print(comment)
-        print("--------------------------comment")
-        print("created_time: "+comment["created_time"])
-        print("message: " +comment["message"])
+        #print("--------------------------comment")
+        #print("created_time: "+comment["created_time"])
+        #print("message: " +comment["message"])
         '''get Likes
         '''
         likeUrl="https://graph.facebook.com/v3.2/"+comment["id"]+"/reactions?"+tokenParam
         #likeJson = getJsonFromUrl(likeUrl)
         #print(likeJson["data"])
         #print("like count :",len(likeJson["data"]))
-        print("--------------------------")        
+        #print("--------------------------")        
         resultComment = comment
         #resultComment["writer"] = comment["from"]["name"]
         #resultComment["like_count"] = len(likeJson["data"])
@@ -59,12 +59,13 @@ def get_comments(post_id):
         #del resultComment["from"]
         del resultComment["id"]
         result.append(resultComment)
+    print(commentJson["paging"])
     return result
 
 
 #get_posts()
 post_num = "264581367591821_264581670925124"
-post_num = "264581367591821_264973414219283"
+#post_num = "264581367591821_264973414219283"
 while True:
     start_time = datetime.now(DT.timezone.utc)
     try:
@@ -80,13 +81,18 @@ while True:
             print("--------------------")
             print(comment["message"])
             if(len(comment["message"]) > 20):
+                print("Fail - long commnet")
                 continue
-            if(this_time-that_time <  DT.timedelta(seconds=60*10) or int(comment["like_count"])>=10):
+            if(this_time-that_time <  DT.timedelta(seconds=60*10)):
             #if(True):
                 print(comment)
                 filtered_comments.append(comment)
+            else:
+                print("Fail - old comment")
         print("================================================")
         print(json.dumps(filtered_comments,indent=2, sort_keys=True))
+        print("-----------------------------------------------")
+        #print(json.dumps(all_comments,indent=2, sort_keys=True))
         print("===============================================")
         filteredJson={}
         filteredJson["data"] = filtered_comments
