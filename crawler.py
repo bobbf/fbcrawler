@@ -1,14 +1,13 @@
+'''
+usage 
+crawler.py {short_live_access_token}
+'''
+import sys
 import json
 import urllib.request
 from datetime import datetime
 import datetime as DT
 import socket
-access_token="EAAE6dVYNwNIBAA5jsqhQtHsh9fy2AU2StYHJ2kpgzPPkjijbcN6ZAgeh6enyYUNhAKI7mIZBTt63TEqC7xI6f0YiR8UGZCaKEeWW6OPD4ZBRpPcF7VkMsxgvKjJ6Krsrkgk9kn9YSCgsFjmMsSjRBiZCm97NkU5eOZAe4Ar9cnv0vNIAXLzALEMdJZAku67qCGsSwLXnJ12D4rIOMQzgi3f"
-access_token="EAAE6dVYNwNIBAA4gl3LUkPsAjOLMB75YxHuYDbbZBOjkkoYauEnFtBOktw9IDqNOCN5x6dSoU8TOehNW9ZA0FZC5ckwnnpZAnuZAmCbT0fmba52YfoPN1qPjXISDr9ASIwI5rj1ZBW2plbmIIznjYDtKdK4m0knJPLn7JfoGTD9ZC5VWDEUGWVQIodETZAAR0RhNAZAyM6CdZBrj2cD9muJOEw"
-
-access_token="EAAE6dVYNwNIBABzHnc6DosQDrK4BbRFgZBqugI3Mt1PpqybjhbNHfZBBZCS8YKDd6gcZAQdV5oFTmEabL51wKx0BdSzeV2NQZA6oZCKAuXs7tZAQoCFMK5JGj93lMiAehSDk4NexMZCxNdXxKcGE4Df2ObhFZBtGdWJV2akYMZChNA7nU5AbA5V72pWjq7l8mhjHXUCUJj43UNTYPduurniNZAL"
-access_token="EAAE6dVYNwNIBAF1GLZA0ys8rnlZBnHXpA2H3ivIOn9wzTJKO6JJWHWeuyWMrhrCLIW8ZBwlnslxYhBt2HMn0janwsqboZCSmOfTYEe4Wu4cJFDGoFGcOCx0sxx8jYucxdXStra00lGgCioicWSfmMv8ukJFZCejpSHD3PdL3xnjNaNWXbwxVDP12DCpdnwk8pfQe6TlgnXAZC7nVN3IGfd"
-tokenParam = "access_token="+access_token
 
 
 def getJsonFromUrl(urlString):
@@ -22,6 +21,17 @@ url = "https://graph.facebook.com/v3.2/me?"+tokenParam
 testJson = getJsonFromUrl(url)
 print(testJson)
 '''
+
+access_token= sys.argv[1]
+client_id= 345750606037202
+client_secret = "7445ab4757f1ebc1633c1f2107066052"
+shortLiveToken = access_token
+getLongLiveTokenUrl = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id="+str(client_id)+"&client_secret="+client_secret+"&fb_exchange_token="+access_token
+#print(getLongLiveTokenUrl)
+longLiveToken = getJsonFromUrl(getLongLiveTokenUrl)["access_token"]
+print(longLiveToken)
+access_token = longLiveToken
+tokenParam = "access_token="+access_token
 
 
 def get_posts():
@@ -65,6 +75,10 @@ def get_comments(post_id):
     return result
 
 
+
+
+
+
 #get_posts()
 post_num = "264581367591821_264581670925124"
 #post_num = "264581367591821_264973414219283"
@@ -104,6 +118,7 @@ while True:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.sendto(byteData,("127.0.0.1",1234))
     except:
+        
         print("*********************Error***************************")
     while True:
         end_time = datetime.now(DT.timezone.utc)
