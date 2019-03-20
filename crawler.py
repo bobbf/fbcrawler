@@ -22,9 +22,9 @@ testJson = getJsonFromUrl(url)
 print(testJson)
 '''
 
-access_token= sys.argv[1]
+access_token= sys.argv[2]
 client_id= 345750606037202
-client_secret = "7445ab4757f1ebc1633c1f2107066052"
+client_secret = sys.argv[1]
 shortLiveToken = access_token
 getLongLiveTokenUrl = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id="+str(client_id)+"&client_secret="+client_secret+"&fb_exchange_token="+access_token
 #print(getLongLiveTokenUrl)
