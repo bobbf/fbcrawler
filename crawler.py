@@ -1,6 +1,6 @@
 '''
 usage 
-crawler.py {short_live_access_token}
+crawler.py {client_secret} {short_live_access_token}
 '''
 import sys
 import json
