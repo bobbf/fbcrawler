@@ -1,13 +1,30 @@
-'''
-usage 
-crawler.py {client_secret} {short_live_access_token}
-'''
 import sys
 import json
 import urllib.request
 from datetime import datetime
 import datetime as DT
 import socket
+import wave
+import pyaudio
+
+
+def play_error_voice():
+    chunk = 1024
+    error_voice = wave.open("error_voice.wav","rb")
+    p = pyaudio.PyAudio()
+    stream = p.open(format=p.get_format_from_width(error_voice.getsampwidth()),
+            channels = error_voice.getnchannels(),
+            rate = error_voice.getframerate(),
+            output = True)
+    data = error_voice.readframes(chunk)
+
+    while data:
+        stream.write(data)
+        data = error_voice.readframes(chunk)
+
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
 
 
 def getJsonFromUrl(urlString):
@@ -21,18 +38,20 @@ url = "https://graph.facebook.com/v3.2/me?"+tokenParam
 testJson = getJsonFromUrl(url)
 print(testJson)
 '''
-
-access_token= sys.argv[2]
-client_id= 345750606037202
-client_secret = sys.argv[1]
-shortLiveToken = access_token
-getLongLiveTokenUrl = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id="+str(client_id)+"&client_secret="+client_secret+"&fb_exchange_token="+access_token
-#print(getLongLiveTokenUrl)
-longLiveToken = getJsonFromUrl(getLongLiveTokenUrl)["access_token"]
-print(longLiveToken)
-access_token = longLiveToken
-tokenParam = "access_token="+access_token
-
+try:
+    access_token= sys.argv[1]
+    client_id= 345750606037202
+    client_secret = "7445ab4757f1ebc1633c1f2107066052"
+    shortLiveToken = access_token
+    getLongLiveTokenUrl = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id="+str(client_id)+"&client_secret="+client_secret+"&fb_exchange_token="+access_token
+    #print(getLongLiveTokenUrl)
+    longLiveToken = getJsonFromUrl(getLongLiveTokenUrl)["access_token"]
+    print(longLiveToken)
+    access_token = longLiveToken
+    tokenParam = "access_token="+access_token
+except:
+    print("**********\nwrong usage : python3 crawl.py <access_token>\nOr token is not vaild"); 
+    sys.exit()
 
 def get_posts():
     url = "https://graph.facebook.com/v3.2/me?fields=posts&"+tokenParam
@@ -75,10 +94,6 @@ def get_comments(post_id):
     return result
 
 
-
-
-
-
 #get_posts()
 post_num = "264581367591821_264581670925124"
 #post_num = "264581367591821_264973414219283"
@@ -117,10 +132,12 @@ while True:
         byteData = sendData.encode()
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.sendto(byteData,("127.0.0.1",1234))
-    except:
-        
-        print("*********************Error***************************")
+    except Exception as e:
+        print("**************************program error************************")
+        print(e)
+        # wave 로 알림
+        play_error_voice()
     while True:
         end_time = datetime.now(DT.timezone.utc)
-        if( end_time-start_time > DT.timedelta(seconds=1)):
+        if( end_time-start_time > DT.timedelta(seconds=5)):
             break
